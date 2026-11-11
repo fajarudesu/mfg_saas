@@ -17,8 +17,11 @@
 
 ## 📽️ Interactive Walkthrough
 
+## 📹 Interactive Walkthrough
+
 <div align="center">
   <video src="Recording.mp4" width="100%" autoplay loop muted playsinline></video>
+</div>
   <p><em>Demonstration: Multi-Role Authentication &rarr; Tri-Database Reconciliation &rarr; Real-Time Fabrication Picking Dashboard</em></p>
 </div>
 
