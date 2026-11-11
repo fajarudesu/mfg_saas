@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn==0.30.0
+xlrd==2.0.2
+openpyxl==3.1.5
+python-multipart==0.0.9
+pydantic==2.9.0
+aiosqlite==0.20.0
+pandas
+psycopg2-binary
+python-dotenv
+ibm_db
+pyodbc

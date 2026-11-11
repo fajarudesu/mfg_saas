@@ -1,0 +1,83 @@
+import xlrd
+import re
+from models import ParsedStandardList, PartItem, LookupTable
+
+def build_qty_formula(qty_str: str, lookup_tables: list) -> str:
+    """Mengubah qty seperti '2N1' menjadi formula Nested IF Excel (Diambil dari generator.py)"""
+    if not qty_str:
+        return ""
+    
+    qty_str = str(qty_str).strip()
+    qty_str = re.sub(r'(?i)\b([hw])\.?(\d+)\b', lambda m: f"{m.group(1).lower()}.{m.group(2)}", qty_str)
+    
+    if not re.search(r'[a-zA-Z]', qty_str):
+        return qty_str
+        
+    final_formula = qty_str
+    
+    for table in lookup_tables:
+        for cond in table.conditions:
+            for raw_header in cond['values'].keys():
+                header_key = str(raw_header).strip()
+                if header_key and re.search(rf'(?<![a-zA-Z]){header_key}(?![0-9])', final_formula):
+                    excel_var = str(table.variable).strip()
+                    excel_var = re.sub(r'(?i)\b([hw])\.?(\d+)\b', lambda m: f"{m.group(1).lower()}.{m.group(2)}", excel_var)
+                    if not excel_var:
+                        excel_var = "W" 
+                        
+                    conditions_list = []
+                    for c in table.conditions:
+                        if header_key in [str(k).strip() for k in c['values'].keys()]:
+                            raw_cond = str(c['condition']).strip()
+                            val = c['values'].get(raw_header, '0')
+                            nums = re.findall(r'\d+\.?\d*', raw_cond.replace(',', '.'))
+                            if not nums: continue
+                                
+                            if '≦' in raw_cond or '<=' in raw_cond or raw_cond.startswith('~'):
+                                cond_expr = f"{excel_var}<={nums[0]}"
+                            elif '<' in raw_cond:
+                                cond_expr = f"{excel_var}<{nums[0]}"
+                            elif '~' in raw_cond or '-' in raw_cond:
+                                if len(nums) >= 2: cond_expr = f"AND({excel_var}>{nums[0]},{excel_var}<={nums[1]})"
+                                else: continue
+                            elif '≧' in raw_cond or '>=' in raw_cond or '>' in raw_cond:
+                                cond_expr = f"{excel_var}>{nums[0]}"
+                            else:
+                                cond_expr = f"{excel_var}<={nums[0]}"
+                                
+                            conditions_list.append((cond_expr, val))
+                    
+                    if conditions_list:
+                        nested_if = "0"
+                        for cond_expr, val in reversed(conditions_list):
+                            nested_if = f"IF({cond_expr},{val},{nested_if})"
+                        final_formula = re.sub(rf'(?<![a-zA-Z]){header_key}(?![0-9])', f"({nested_if})", final_formula)
+
+    if final_formula != qty_str:
+        final_formula = re.sub(r'(\d)\(', r'\1*(', final_formula)
+        return f"={final_formula}"
+        
+    return qty_str
+
+def parse_standard_list(file_path: str) -> ParsedStandardList:
+    """Parse a standard list .xls file and return structured data."""
+    wb = xlrd.open_workbook(file_path)
+    sheet_name = wb.sheet_names()[0]
+    result = ParsedStandardList(list_no=sheet_name)
+
+    main_sheet = wb.sheet_by_index(0)
+    _parse_metadata(main_sheet, result)
+
+    for i in range(len(wb.sheet_names())):
+        current_sheet = wb.sheet_by_index(i)
+        _parse_materials(current_sheet, result)
+        _parse_parts(current_sheet, result)
+        _parse_lookup_tables(current_sheet, result)
+
+    # --- POST-PROCESSING: Render formula untuk Part sebelum dikirim ke Frontend ---
+    for part in result.parts:
+        raw_qty = part.qty if part.qty else part.length
+        # Simpan hasil olahan IF Condition ke properti cut_formula milik parts
+        part.cut_formula = build_qty_formula(raw_qty, result.lookup_tables)
+
+    return result

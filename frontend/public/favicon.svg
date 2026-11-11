@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="100%" height="100%">
+  <defs>
+    <!-- Gradien Biru Muda ke Biru Tua -->
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="45%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <!-- Kilatan Refleksi Putih di Atas -->
+    <linearGradient id="whiteHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Grup Simbol Berukuran Pas untuk Tab Browser -->
+  <g transform="translate(1.5, 1.5)">
+    <!-- Pinggiran Outline Putih Terang -->
+    <path d="M 11 3 L 25 3 L 17 13 L 27 13 L 14 28 L 17 17 L 9 17 Z" 
+          fill="#FFFFFF" 
+          stroke="#FFFFFF" 
+          stroke-width="3" 
+          stroke-linejoin="round" 
+          stroke-linecap="round"/>
+
+    <!-- Isi Utama Biru Gradien -->
+    <path d="M 11 3 L 25 3 L 17 13 L 27 13 L 14 28 L 17 17 L 9 17 Z" 
+          fill="url(#blueGradient)" 
+          stroke="url(#blueGradient)" 
+          stroke-width="0.8" 
+          stroke-linejoin="round" 
+          stroke-linecap="round"/>
+
+    <!-- Efek Pantulan Cahaya Putih -->
+    <path d="M 12 4.5 L 23.5 4.5 L 17 12.5 L 10.5 16.5 Z" 
+          fill="url(#whiteHighlight)" 
+          opacity="0.5"/>
+  </g>
+</svg>
