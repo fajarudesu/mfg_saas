@@ -19,7 +19,7 @@
 
 <div align="center">
   <!-- Replace with your uploaded GitHub asset URL or local video path -->
-  <video src="assets/demo_walkthrough.mp4" width="100%" autoplay loop muted playsinline></video>
+  <video src="Recording.mp4" width="100%" autoplay loop muted playsinline></video>
   <p><em>Demonstration: Multi-Role Authentication &rarr; Tri-Database Reconciliation &rarr; Real-Time Fabrication Picking Dashboard</em></p>
 </div>
 
