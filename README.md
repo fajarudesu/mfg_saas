@@ -205,5 +205,5 @@ DB2_DRIVER={IBM DB2 ODBC DRIVER}
 ## 👨‍💻 Author & Maintainer
 
 * **Engineer:** F-set
-* **LinkedIn:** [linkedin.com/in/username](https://linkedin.com/in/fajar-setiono)
+* **LinkedIn:** [linkedin.com/in/F-set](https://linkedin.com/in/fajar-setiono)
 * **GitHub:** [Fajar Set](https://github.com/fajarudesu)
